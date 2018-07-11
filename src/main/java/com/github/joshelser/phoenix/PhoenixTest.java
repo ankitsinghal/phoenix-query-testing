@@ -129,17 +129,17 @@ public class PhoenixTest {
     }
     try (Connection conn = DriverManager.getConnection("jdbc:phoenix:localhost:2181:/hbase-1.1.2.2.6.5.0", "", "")) {
       conn.setAutoCommit(false);
-//      try (PreparedStatement pstmt = conn.prepareStatement(TABLE_A_UPSERT)) {
-//        System.out.println("Writing to " + TABLE_A");          
-//        for (int i = 0; i < Integer.parseInt(args[0]); i++) {
-//          prepareTableA(pstmt);
-//          pstmt.executeUpdate();
-//          if (i % 10000 == 0) {
-//            conn.commit();
-//          }
-//        }
-//        conn.commit();
-//      }
+      try (PreparedStatement pstmt = conn.prepareStatement(TABLE_A_UPSERT)) {
+        System.out.println("Writing to " + TABLE_A);          
+        for (int i = 0; i < Integer.parseInt(args[0]); i++) {
+          prepareTableA(pstmt);
+          pstmt.executeUpdate();
+          if (i % 10000 == 0) {
+            conn.commit();
+          }
+        }
+        conn.commit();
+      }
       try (PreparedStatement pstmt = conn.prepareStatement(TABLE_B_UPSERT)) {
         System.out.println("Writing to " + TABLE_B);
         for (int i = 0; i < Integer.parseInt(args[1]); i++) {
