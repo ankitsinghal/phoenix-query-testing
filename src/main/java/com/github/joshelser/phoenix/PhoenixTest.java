@@ -124,17 +124,20 @@ public class PhoenixTest {
   }
 
   public static void main(String[] args) throws Exception {
-    if (args.length < 2) {
-      throw new IllegalArgumentException("Usage: <num_rows_in_A> <num_rows_in_B>");
+	 
+    if (args.length < 3) {
+      throw new IllegalArgumentException("Usage: <zookeeper_url> <num_rows_in_A> <num_rows_in_B>");
     }
-    try (Connection conn = DriverManager.getConnection("jdbc:phoenix:localhost:2181:/hbase-1.1.2.2.6.5.0", "", "")) {
+		String zookeeper_url = args[0];
+    
+    try (Connection conn = DriverManager.getConnection("jdbc:phoenix:"+zookeeper_url, "", "")) {
       conn.setAutoCommit(false);
       try (PreparedStatement pstmt = conn.prepareStatement(TABLE_A_UPSERT)) {
         System.out.println("Writing to " + TABLE_A);          
-        for (int i = 0; i < Integer.parseInt(args[0]); i++) {
+        for (int i = 0; i < Integer.parseInt(args[1]); i++) {
           prepareTableA(pstmt);
           pstmt.executeUpdate();
-          if (i % 10000 == 0) {
+          if (i % 1000 == 0) {
             conn.commit();
           }
         }
@@ -142,10 +145,10 @@ public class PhoenixTest {
       }
       try (PreparedStatement pstmt = conn.prepareStatement(TABLE_B_UPSERT)) {
         System.out.println("Writing to " + TABLE_B);
-        for (int i = 0; i < Integer.parseInt(args[1]); i++) {
+        for (int i = 0; i < Integer.parseInt(args[2]); i++) {
           prepareTableB(pstmt);
           pstmt.executeUpdate();
-          if (i % 10000 == 0) {
+          if (i % 1000 == 0) {
             conn.commit();
           }
         }
